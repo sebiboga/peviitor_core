@@ -50,21 +50,6 @@ Workflows, pipelines and code that is validating the rules, keeping the index up
 | **Elasticsearch** | ⚠️ Secondary | Legacy compatibility | Existing peviitor scrapers |
 | **Typesense** | 🚀 MVP/Prototype | Ultra-fast UI search (<50ms) | Typo-tolerant, developer friendly |
 
-
-## Plugins
-
-The following components are considered **plugins** for the peviitor core project:
-
-- BFF API — Backend-for-Frontend API layers that tailor data and endpoints for different clients.
-- UI — Web or mobile user interfaces and frontend components.
-- Scrapers — Automated data collectors that fetch and normalize job and company data.
-- Manual data validator — Tools or interfaces used by humans to validate and correct data.
-- Integrations — Connectors to external services (analytics, exporters, auth providers, etc.).
-
-## Key Benefits
-**Performance, reliability, recovery from disaster, scalability, and validity** are the most valuable benefits this project delivers.
-
-
 ## Notes
 - Project is **OPEN SOURCE**.
 - Security and procedures related to ways of working will be part of the project.
@@ -74,7 +59,8 @@ The following components are considered **plugins** for the peviitor core projec
 
 
 
-
+## Key Benefits
+**Performance, reliability, recovery from disaster, scalability, and validity** are the most valuable benefits this project delivers.
 
 ### SOLR/OpenSearch Note
 
@@ -99,3 +85,14 @@ The following components are considered **plugins** for the peviitor core projec
 5. **Invalid content** → SET `validation`="tested", schedule recheck in 24h
 6. **Valid** → UPDATE `validation`="verified", `vdate`=NOW()
 **Max batch**: 50k jobs/day, prioritize newest first
+
+
+## Plugins
+
+The following components are considered **plugins** for the peviitor core project:
+
+- BFF API — Backend-for-Frontend API layers that tailor data and endpoints for different clients.
+- UI — Web or mobile user interfaces and frontend components.
+- Scrapers — Automated data collectors that fetch and normalize job and company data.
+- Manual data validator — Tools or interfaces used by humans to validate and correct data.
+- Integrations — Connectors to external services (analytics, exporters, auth providers, etc.).
