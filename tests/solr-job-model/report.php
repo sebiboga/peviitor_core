@@ -77,7 +77,11 @@ function render_html_report(array $results, array $testPlan, array $modelLabels,
             $rawDoc = ['_id' => $doc['id']];
         }
 
-        $jsonPretty = json_encode($rawDoc, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        // eliminăm câmpurile interne pe care nu le vrem în JSON-ul afișat
+        unset($rawDoc['_root_'], $rawDoc['_version_']); 
+        
+        $jsonPretty = json_encode($rawDoc, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); 
+
         $html .= "<details class=\"json-block\">\n";
         $html .= "<summary>Vezi JSON-ul original al documentului</summary>\n";
         $html .= "<pre class=\"json\">" . htmlspecialchars($jsonPretty, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . "</pre>\n";
