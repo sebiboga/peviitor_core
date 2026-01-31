@@ -1,7 +1,11 @@
 <?php
 
-$statusFile = __DIR__ . '/status.json';
-$reportFile = __DIR__ . '/report.html';
+require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/testplan.php';
+require_once __DIR__ . '/report.php';
+
+$statusFile  = __DIR__ . '/status.json';
+$resultsFile = __DIR__ . '/results.json';
 
 $status = null;
 if (file_exists($statusFile)) {
@@ -55,6 +59,50 @@ if (file_exists($statusFile)) {
         .refresh-btn:hover {
             background: #1565c0;
         }
+
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 4px 6px; }
+        th { background: #f0f0f0; }
+        .PASS { color: #006400; font-weight: bold; }
+        .FAIL { color: #b22222; font-weight: bold; }
+        .WARN { color: #b8860b; font-weight: bold; }
+        .severity-ERROR { font-weight: bold; color: #b22222; }
+        .severity-WARN  { font-weight: bold; color: #b8860b; }
+        .doc-id { font-size: 12px; word-break: break-all; }
+
+        details.json-block { margin-bottom: 20px; }
+        details.json-block summary {
+            cursor: pointer;
+            font-weight: bold;
+            margin: 6px 0;
+        }
+        pre.json {
+            background: #f7f7f7;
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 12px;
+            max-height: 300px;
+            overflow: auto;
+            white-space: pre;
+        }
+
+        .pager {
+            margin: 10px 0 20px 0;
+            font-size: 13px;
+        }
+        .pager a, .pager span {
+            margin-right: 8px;
+        }
+        .pager a {
+            text-decoration: none;
+            color: #1976d2;
+        }
+        .pager a:hover {
+            text-decoration: underline;
+        }
+        .pager .disabled {
+            color: #aaa;
+        }
     </style>
 </head>
 <body>
@@ -95,13 +143,24 @@ if (file_exists($statusFile)) {
             Progres: <?php echo $total; ?> din <?php echo $total; ?> documente (100%).
         </p>
 
-        <?php if (file_exists($reportFile)): ?>
-            <hr>
-            <h2>Raport detaliat</h2>
-            <?php readfile($reportFile); ?>
-        <?php else: ?>
-            <p>Nu există încă report.html, deși statusul este „finished”.</p>
-        <?php endif; ?>
+        <?php
+        if (file_exists($resultsFile)) {
+            $resultsJson = file_get_contents($resultsFile);
+            $results = json_decode($resultsJson, true);
+
+            if (is_array($results)) {
+                // pagina curentă din query string
+                $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
+                // rulează rendererul de raport (cu paginare)
+                echo render_html_report($results, $TEST_PLAN, $MODEL_LABELS, $page, 100);
+            } else {
+                echo "<p>Nu am putut decoda results.json.</p>";
+            }
+        } else {
+            echo "<p>Nu există încă results.json, deși statusul este „finished”.</p>";
+        }
+        ?>
 
     <?php else: ?>
         <p class="status-error">

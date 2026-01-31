@@ -95,6 +95,7 @@ function run_testplan(array $docs, array $testPlan, array $ctx): array {
         'completed_tcs'     => $completedTcs,
     ]);
 
+    // inițializăm structura de rezultate
     foreach ($docs as $i => $doc) {
         $docId = isset($doc['url']) ? $doc['url'] : "idx:$i";
         $results['docs'][$i] = [
@@ -103,10 +104,13 @@ function run_testplan(array $docs, array $testPlan, array $ctx): array {
         ];
     }
 
+    // stocăm și documentele brute pentru raportul JSON
+    $results['raw_docs'] = $docs;
+
     foreach ($testPlan as $tc) {
-        $tcId   = $tc['id'];
-        $fn     = $tc['function'];
-        $model  = $tc['model'];
+        $tcId  = $tc['id'];
+        $fn    = $tc['function'];
+        $model = $tc['model'];
 
         // actualizează status pentru TC curent (progres pe documente va actualiza current_doc_index)
         update_status([
