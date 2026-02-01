@@ -22,7 +22,7 @@ Workflows, pipelines and code that is validating the rules, keeping the index up
 | status         | string | No       | "scraped", "tested", "published", "verified". **status** starts "scraped", progresses: scraped → tested → published → verified|
 | vdate          | date   | No       | Verified date (ISO8601). **vdate** set only when validation="verified"|
 | expirationdate | date   | No       | Data expirare estimată job.  **expirationdate** = vdate + 30 days max, or extract from job page|
-| salary         | string | No       | Interval salarial + currency (ex: "5000-8000 RON", "4000 EUR"). **salary** format: "MIN-MAX CURRENCY" or "negotiable CURRENCY"|
+| salary         | string | No       | Interval salarial + currency (ex: "5000-8000 RON", "4000 EUR"). **salary** format: "MIN-MAX CURRENCY" ; must be a string not an array.|
 
 
 
