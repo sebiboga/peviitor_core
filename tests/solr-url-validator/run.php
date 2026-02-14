@@ -35,7 +35,7 @@ function solrGet($params)
     return $data;
 }
 
-// delete by URL (unique key)
+// delete by URL (unique key) + log to file
 function solrDeleteByUrl($urlValue)
 {
     $url = SOLR_CORE_URL . '/update?commit=true';
@@ -63,6 +63,14 @@ function solrDeleteByUrl($urlValue)
 
     if ($httpCode >= 200 && $httpCode < 300) {
         echo "Deleted from Solr: $urlValue" . PHP_EOL;
+
+        // append to log file: timestamp | url
+        file_put_contents(
+            DELETED_LOG_FILE,
+            date('c') . " | " . $urlValue . PHP_EOL,
+            FILE_APPEND
+        );
+
         return true;
     }
 

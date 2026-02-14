@@ -18,3 +18,6 @@ const INVALID_TEXT_PATTERNS = [
 ];
 
 define('URL_TIMEOUT', getenv('URL_TIMEOUT') ?: 15);
+
+// Log file for deleted URLs (can be overridden with env DELETED_LOG_FILE)
+define('DELETED_LOG_FILE', getenv('DELETED_LOG_FILE') ?: '/app/deleted_urls.log');
