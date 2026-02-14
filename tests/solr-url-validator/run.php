@@ -1,6 +1,12 @@
 <?php
 require __DIR__ . '/config.php';
 
+// ensure log directory exists
+$logDir = dirname(DELETED_LOG_FILE);
+if (!is_dir($logDir)) {
+    mkdir($logDir, 0777, true);
+}
+
 function solrGet($params)
 {
     $url = SOLR_CORE_URL . '/select?' . http_build_query($params);
