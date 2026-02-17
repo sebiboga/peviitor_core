@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "project": "peviitor_core",
+  "description": "OpenCode configuration for peviitor.ro project",
+  "solr": {
+    "url": "http://localhost:8983/solr",
+    "cores": {
+      "job": "http://localhost:8983/solr/job",
+      "company": "http://localhost:8983/solr/company"
+    },
+    "auth": {
+      "username": "solr",
+      "password": "SolrRocks"
+    }
+  },
+  "docker": {
+    "container": "peviitor-solr"
+  },
+  "tasks": {
+    "start-solr": "docker start peviitor-solr",
+    "stop-solr": "docker stop peviitor-solr",
+    "restart-chrome": "chrome --remote-debugging-port=9222"
+  }
+}
