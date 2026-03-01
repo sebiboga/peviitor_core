@@ -181,4 +181,41 @@ curl -s -X POST "$SOLR_URL/schema" \
 }'
 
 echo
+echo "=== Add SuggestComponent for job titles ==="
+
+curl -s -X POST "$SOLR_URL/config" \
+  -H "Content-Type: application/json" \
+  --data-binary '{
+  "add-searchcomponent": {
+    "name": "suggest",
+    "class": "solr.SuggestComponent",
+    "suggester": {
+      "name": "jobTitleSuggester",
+      "lookupImpl": "FuzzyLookupFactory",
+      "dictionaryImpl": "DocumentDictionaryFactory",
+      "field": "title",
+      "suggestAnalyzerFieldType": "text_general",
+      "buildOnCommit": "true",
+      "buildOnStartup": "false"
+    }
+  }
+}'
+
+curl -s -X POST "$SOLR_URL/config" \
+  -H "Content-Type: application/json" \
+  --data-binary '{
+  "add-requesthandler": {
+    "name": "/suggest",
+    "class": "solr.SearchHandler",
+    "startup": "lazy",
+    "defaults": {
+      "suggest": "true",
+      "suggest.dictionary": "jobTitleSuggester",
+      "suggest.count": "10"
+    },
+    "components": ["suggest"]
+  }
+}'
+
+echo
 echo "=== DONE ==="

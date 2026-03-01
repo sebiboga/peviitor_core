@@ -98,8 +98,19 @@ curl -s -X POST "%SOLR_URL%/schema" ^
   -d "{\"add-copy-field\":{\"source\":\"salary\",\"dest\":\"_text_\"}}"
 
 curl -s -X POST "%SOLR_URL%/schema" ^
- -H "Content-Type: application/json" ^
- --data-binary "{""delete-field"":{""name"":""id""}}"
+  -H "Content-Type: application/json" ^
+  --data-binary "{""delete-field"":{""name"":""id""}}"
+
+echo.
+echo === Add SuggestComponent for job titles ===
+
+curl -s -X POST "%SOLR_URL%/config" ^
+  -H "Content-Type: application/json" ^
+  --data-binary "{\"add-searchcomponent\":{\"name\":\"suggest\",\"class\":\"solr.SuggestComponent\",\"suggester\":{\"name\":\"jobTitleSuggester\",\"lookupImpl\":\"FuzzyLookupFactory\",\"dictionaryImpl\":\"DocumentDictionaryFactory\",\"field\":\"title\",\"suggestAnalyzerFieldType\":\"text_general\",\"buildOnCommit\":\"true\",\"buildOnStartup\":\"false\"}}}"
+
+curl -s -X POST "%SOLR_URL%/config" ^
+  -H "Content-Type: application/json" ^
+  --data-binary "{\"add-requesthandler\":{\"name\":\"/suggest\",\"class\":\"solr.SearchHandler\",\"startup\":\"lazy\",\"defaults\":{\"suggest\":\"true\",\"suggest.dictionary\":\"jobTitleSuggester\",\"suggest.count\":\"10\"},\"components\":[\"suggest\"]}}"
 
 echo.
 echo === DONE ===
