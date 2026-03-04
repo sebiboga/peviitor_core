@@ -19,7 +19,9 @@ const INVALID_TEXT_PATTERNS = [
 
 define('URL_TIMEOUT', getenv('URL_TIMEOUT') ?: 15);
 
-// Log file for deleted URLs (can be overridden with env DELETED_LOG_FILE)
-//define('DELETED_LOG_FILE', getenv('DELETED_LOG_FILE') ?: '/app/deleted_urls.log');
-define('DELETED_LOG_FILE', getenv('DELETED_LOG_FILE') ?: '/log/deleted_urls.log');
+
+// Log file for deleted URLs (only in Docker, not locally)
+$inDocker = is_dir('/app');
+define('DELETED_LOG_FILE', $inDocker ? getenv('DELETED_LOG_FILE') ?: '/log/deleted_urls.log' : '');
+
 

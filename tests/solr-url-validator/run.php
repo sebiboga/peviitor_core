@@ -1,9 +1,13 @@
 <?php
 require __DIR__ . '/config.php';
 
-// ensure log directory exists
+
+
+
+
 $logDir = dirname(DELETED_LOG_FILE);
-if (!is_dir($logDir)) {
+if (DELETED_LOG_FILE && $logDir && !is_dir($logDir)) {
+
     mkdir($logDir, 0777, true);
 }
 
@@ -71,11 +75,16 @@ function solrDeleteByUrl($urlValue)
         echo "Deleted from Solr: $urlValue" . PHP_EOL;
 
         // append to log file: timestamp | url
-        file_put_contents(
-            DELETED_LOG_FILE,
-            date('c') . " | " . $urlValue . PHP_EOL,
-            FILE_APPEND
-        );
+
+
+        if (DELETED_LOG_FILE) {
+            file_put_contents(
+                DELETED_LOG_FILE,
+                date('c') . " | " . $urlValue . PHP_EOL,
+                FILE_APPEND
+            );
+        }
+
 
         return true;
     }
