@@ -67,10 +67,58 @@ curl -s -X POST "$SOLR_URL/schema" \
     }
   }'
 
+# brand
+curl -s -X POST "$SOLR_URL/schema" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "add-field": {
+      "name": "brand",
+      "type": "string",
+      "stored": true,
+      "indexed": true
+    }
+  }'
+
+# group
+curl -s -X POST "$SOLR_URL/schema" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "add-field": {
+      "name": "group",
+      "type": "string",
+      "stored": true,
+      "indexed": true
+    }
+  }'
+
+# lastScraped
+curl -s -X POST "$SOLR_URL/schema" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "add-field": {
+      "name": "lastScraped",
+      "type": "string",
+      "stored": true,
+      "indexed": false
+    }
+  }'
+
+# scraperFile
+curl -s -X POST "$SOLR_URL/schema" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "add-field": {
+      "name": "scraperFile",
+      "type": "string",
+      "stored": true,
+      "indexed": false
+    }
+  }'
+
 echo
 echo "=== Add copyFields into _text_ ==="
 
-for FIELD in company location website; do
+for FIELD in company location website brand group; do
   curl -s -X POST "$SOLR_URL/schema" \
     -H "Content-Type: application/json" \
     -d "{
