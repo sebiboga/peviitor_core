@@ -13,7 +13,7 @@ Workflows, pipelines and code that is validating the rules, keeping the index up
 |----------------|----------|----------|----------------------|
 | url            | string   | Yes      | Full URL to the job detail page. unique. **url** must be valid HTTP/HTTPS URL, canonical job detail page|
 | title          | string   | Yes      | Exact position title. **title** max 200 chars, no HTML, trimmed whitespace, **DIACRITICS ACCEPTED** (ăâîșțĂÂÎȘȚ)|
-| company        | string   | No       | Name of the hiring company. Real name. Full name. not just a brand or a code. Legal name.  **company** must match exactly Company.name (case insensitive, **DIACR[...]
+| company        | string   | No       | Name of the hiring company. Real name. Full name. Use uppercase always. not just a brand or a code. Legal name.  **company** must match exactly Company.name (case insensitive, **DIACR[...]
 | cif            | string   | No       | CIF/CUI. Due to the fact that Systematic SRL exist with same name in 3 different counties Bihor, Arad, Timis |
 | location       | string[] | No       | Location or detailed address.  **location** Romanian cities/addresses, **DIACRITICS ACCEPTED** (ex: "București", "Cluj-Napoca"). multi-valued, stored as array|
 | tags           | string[] | No       | Tag-uri skills/educație/experiență. **tags** lowercase, max 20 entries, standardized values only, **NO DIACRITICS**|
@@ -33,7 +33,7 @@ Workflows, pipelines and code that is validating the rules, keeping the index up
 | Field     | Type     | Required | Description |
 |-----------|----------|----------|-------------|
 | id        | string   | Yes      | CIF/CUI of the company (e.g. "12345678"). **id** = exact CIF/CUI 8 digits (no RO prefix). |
-| company   | string   | Yes      | Exact name for job matching. **company** = legal name from Trade Register, **DIACRITICS REQUIRED** (e.g. "Tehnologia Informației"). |
+| company   | string   | Yes      | Exact name for job matching. **company** = legal name from Trade Register, **DIACRITICS REQUIRED** (e.g. "Tehnologia Informației"). Use uppercase|
 | brand     | string   | No       | Commercial brand name (e.g. "ORANGE", "EPAM"). Used for display purposes. |
 | group     | string   | No       | Parent company group (e.g. "Orange Group", "EPAM Systems"). |
 | status    | string   | No       | Status: "activ", "suspendat", "inactiv", "radiat". If company status is not active, remove jobs; also remove company. **status** only: "activ", "suspendat", "inactiv", "radiat". |
