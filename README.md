@@ -24,7 +24,18 @@ Workflows, pipelines and code that is validating the rules, keeping the index up
 | expirationdate | date     | No       | Data expirare estimată job.  **expirationdate** = vdate + 30 days max, or extract from job page|
 | salary         | string   | No       | Interval salarial + currency (ex: "5000-8000 RON", "4000 EUR"). **salary** format: "MIN-MAX CURRENCY" ; must be a string not an array.|
 
-
+## Job Status Flow
+Job status follows this progression: `scraped` → (`tested` OR `verified`) → `published`
+| Status | Meaning | When to Use |
+|--------|---------|-------------|
+| `scraped` | Newly scraped, not validated yet | Default after scraping |
+| `tested` | URL works, job exists but couldn't extract full details | Page blocked by CAPTCHA, didn't load properly, missing salary/tags/workmode |
+| `verified` | Fully scraped with all details | All fields extracted: company, cif, salary, tags, workmode |
+| `published` | Imported from jobs core | Old validator flow - jobs imported to main job index |
+Notes:
+- tested jobs can be re-validated later when more data becomes available
+- vdate (verified date) is set only when status becomes tested or verified
+- Jobs with status verified are considered valid and ready for publication
 
 > **Note**: Fields marked as `string[]` are multi-valued arrays. In SOLR/OpenSearch these are stored as arrays (e.g., `["București", "Cluj-Napoca"]`).
 
