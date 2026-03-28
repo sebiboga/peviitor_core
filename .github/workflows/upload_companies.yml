@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       chunk:
-        description: 'Chunk number to process (1-17, or "all")'
+        description: 'Chunk to process (1-67, or "all")'
         required: true
         default: '1'
 
@@ -21,6 +21,7 @@ jobs:
       - name: Setup
         run: |
           chmod +x upload_to_solr.sh
+          ls data_sources/
       
       - name: Upload single chunk
         if: github.event.inputs.chunk != 'all'
@@ -28,8 +29,8 @@ jobs:
           SOLR_URL: ${{ secrets.SOLR_URL }}
           SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
         run: |
-          echo "Processing chunk_${{ github.event.inputs.chunk }}.csv"
-          bash upload_to_solr.sh "data_sources/chunk_aa.csv" "$SOLR_URL" "$SOLR_AUTH"
+          echo "Processing chunk_aaa.csv"
+          bash upload_to_solr.sh "data_sources/chunk_aaa.csv" "$SOLR_URL" "$SOLR_AUTH"
       
       - name: Upload all chunks
         if: github.event.inputs.chunk == 'all'
@@ -37,9 +38,7 @@ jobs:
           SOLR_URL: ${{ secrets.SOLR_URL }}
           SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
         run: |
-          for i in $(seq -f "%02g" 1 16); do
-            echo "Processing chunk_aa.csv..."
-            bash upload_to_solr.sh "data_sources/chunk_aa.csv" "$SOLR_URL" "$SOLR_AUTH"
+          for f in data_sources/chunk_*.csv; do
+            echo "Processing $f..."
+            bash upload_to_solr.sh "$f" "$SOLR_URL" "$SOLR_AUTH"
           done
-          echo "Processing last chunk (aq.csv)..."
-          bash upload_to_solr.sh "data_sources/chunk_aq.csv" "$SOLR_URL" "$SOLR_AUTH"
