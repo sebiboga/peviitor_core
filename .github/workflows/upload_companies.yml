@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       chunk:
-        description: 'Chunk to process (1-67, or "all")'
+        description: 'Chunk number (1-67) or "all" for everything'
         required: true
-        default: '1'
+        default: 'all'
 
 jobs:
   upload:
@@ -34,8 +34,11 @@ jobs:
           SOLR_URL: ${{ secrets.SOLR_URL }}
           SOLR_USER: ${{ secrets.SOLR_USER }}
           SOLR_PASSWD: ${{ secrets.SOLR_PASSWD }}
+          CHUNK_NUM: ${{ github.event.inputs.chunk }}
         run: |
-          bash upload_to_solr.sh "data_sources/chunk_aaa.csv" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
+          printf -v CHUNK "chunk_%03d.csv" "$CHUNK_NUM"
+          echo "Processing $CHUNK"
+          bash upload_to_solr.sh "data_sources/$CHUNK" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
       
       - name: Upload all chunks
         if: github.event.inputs.chunk == 'all'
