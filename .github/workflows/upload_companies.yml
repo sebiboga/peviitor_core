@@ -24,11 +24,11 @@ jobs:
           SOLR_USER: ${{ secrets.SOLR_USER }}
           SOLR_PASSWD: ${{ secrets.SOLR_PASSWD }}
         run: |
-          chmod +x upload_to_solr.sh
+          chmod +x upload_to_solr.sh verify_and_delete.sh
           echo "Testing SOLR connection..."
           curl -s -u "$SOLR_USER:$SOLR_PASSWD" "$SOLR_URL/admin/ping" | grep -q "status" && echo "SOLR OK!" || { echo "SOLR FAILED!"; exit 1; }
       
-      - name: Upload single chunk
+      - name: Upload and verify single chunk
         if: github.event.inputs.chunk != 'all'
         env:
           SOLR_URL: ${{ secrets.SOLR_URL }}
@@ -37,9 +37,9 @@ jobs:
           CHUNK_NAME: ${{ github.event.inputs.chunk }}
         run: |
           echo "Processing chunk_$CHUNK_NAME.csv"
-          bash upload_to_solr.sh "data_sources/chunk_$CHUNK_NAME.csv" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
+          bash verify_and_delete.sh "data_sources/chunk_$CHUNK_NAME.csv" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
       
-      - name: Upload all chunks
+      - name: Upload and verify all chunks
         if: github.event.inputs.chunk == 'all'
         env:
           SOLR_URL: ${{ secrets.SOLR_URL }}
@@ -48,5 +48,5 @@ jobs:
         run: |
           for f in data_sources/chunk_*.csv; do
             echo "=== Processing $f ==="
-            bash upload_to_solr.sh "$f" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
+            bash verify_and_delete.sh "$f" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASSWD"
           done
