@@ -1,0 +1,5 @@
+# Data sources (large CSV chunks)
+data_sources/
+
+# Large CSV files
+*.csv

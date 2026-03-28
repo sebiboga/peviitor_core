@@ -129,6 +129,10 @@ Adaugă/Actualizează în SOLR core-ul `company`:
 - [ ] Se actualizează câmpul `company` în SOLR cu `denumire` din ANAF
 - [ ] Se respectă configurația din `opencode.json` (URL, auth)
 
+### Important: CUI Validation
+> **Nu se inserează în SOLR** companiile care au CUI = 0 sau NULL.
+> Acestea reprezintă Persoane Fizice (PF) vechi, fără cod fiscal valid.
+
 ---
 
 ## PHASE 2: Company Status Update

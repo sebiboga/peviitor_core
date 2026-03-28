@@ -1,0 +1,45 @@
+name: Upload Companies to SOLR
+
+on:
+  workflow_dispatch:
+    inputs:
+      chunk:
+        description: 'Chunk number to process (1-17, or "all")'
+        required: true
+        default: '1'
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+      
+      - name: Setup
+        run: |
+          chmod +x upload_to_solr.sh
+      
+      - name: Upload single chunk
+        if: github.event.inputs.chunk != 'all'
+        env:
+          SOLR_URL: ${{ secrets.SOLR_URL }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+        run: |
+          echo "Processing chunk_${{ github.event.inputs.chunk }}.csv"
+          bash upload_to_solr.sh "data_sources/chunk_aa.csv" "$SOLR_URL" "$SOLR_AUTH"
+      
+      - name: Upload all chunks
+        if: github.event.inputs.chunk == 'all'
+        env:
+          SOLR_URL: ${{ secrets.SOLR_URL }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+        run: |
+          for i in $(seq -f "%02g" 1 16); do
+            echo "Processing chunk_aa.csv..."
+            bash upload_to_solr.sh "data_sources/chunk_aa.csv" "$SOLR_URL" "$SOLR_AUTH"
+          done
+          echo "Processing last chunk (aq.csv)..."
+          bash upload_to_solr.sh "data_sources/chunk_aq.csv" "$SOLR_URL" "$SOLR_AUTH"
