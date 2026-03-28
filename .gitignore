@@ -1,5 +1,5 @@
-# Data sources (large CSV chunks)
-data_sources/
-
-# Large CSV files
+# Large CSV files in root
 *.csv
+
+# But allow data_sources chunks
+!data_sources/
