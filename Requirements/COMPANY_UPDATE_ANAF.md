@@ -327,3 +327,11 @@ jobs:
 - [ ] Cron schedule: zilnic la ora stabilită (ex: 02:00 UTC)
 - [ ] Secret-uri configurate în GitHub repo
 - [ ] Permisiuni pentru access la container
+
+
+URL data gov
+https://data.gov.ro/organization/onrc
+seturi de date
+ultimul set de date
+fisierul CSV download
+trebuie parsat si apoi introdus in SOLR
