@@ -27,18 +27,20 @@ jobs:
         if: github.event.inputs.chunk != 'all'
         env:
           SOLR_URL: ${{ secrets.SOLR_URL }}
-          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+          SOLR_USER: ${{ secrets.SOLR_USER }}
+          SOLR_PASS: ${{ secrets.SOLR_PASS }}
         run: |
           echo "Processing chunk_aaa.csv"
-          bash upload_to_solr.sh "data_sources/chunk_aaa.csv" "$SOLR_URL" "$SOLR_AUTH"
+          bash upload_to_solr.sh "data_sources/chunk_aaa.csv" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASS"
       
       - name: Upload all chunks
         if: github.event.inputs.chunk == 'all'
         env:
           SOLR_URL: ${{ secrets.SOLR_URL }}
-          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+          SOLR_USER: ${{ secrets.SOLR_USER }}
+          SOLR_PASS: ${{ secrets.SOLR_PASS }}
         run: |
           for f in data_sources/chunk_*.csv; do
             echo "Processing $f..."
-            bash upload_to_solr.sh "$f" "$SOLR_URL" "$SOLR_AUTH"
+            bash upload_to_solr.sh "$f" "$SOLR_URL" "$SOLR_USER" "$SOLR_PASS"
           done

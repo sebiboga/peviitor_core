@@ -2,8 +2,11 @@
 
 CSV_FILE="$1"
 SOLR_URL="${2:-$SOLR_URL}"
-AUTH="${3:-$SOLR_AUTH}"
-BATCH_SIZE="${4:-50}"
+SOLR_USER="${3:-$SOLR_USER}"
+SOLR_PASS="${4:-$SOLR_PASS}"
+BATCH_SIZE="${5:-50}"
+
+AUTH="$SOLR_USER:$SOLR_PASS"
 
 echo "=========================================="
 echo "Processing: $CSV_FILE"
