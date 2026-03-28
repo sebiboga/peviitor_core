@@ -3,22 +3,37 @@
 CSV_FILE="$1"
 SOLR_URL="${2:-$SOLR_URL}"
 SOLR_USER="${3:-$SOLR_USER}"
-SOLR_PASS="${4:-$SOLR_PASS}"
+SOLR_PASS="${4:-$SOLR_PASSWD}"
 BATCH_SIZE="${5:-50}"
 
 AUTH="$SOLR_USER:$SOLR_PASS"
 
 echo "=========================================="
-echo "Processing: $CSV_FILE"
+echo "SOLR Upload Script"
 echo "=========================================="
+echo "CSV: $CSV_FILE"
+echo "SOLR URL: $SOLR_URL"
+echo ""
+
+# Test SOLR connection first
+echo "Testing SOLR connection..."
+TEST=$(curl -s -u "$AUTH" "$SOLR_URL/admin/ping" | grep -o "status" | head -1)
+if [ -z "$TEST" ]; then
+    echo "ERROR: Cannot connect to SOLR at $SOLR_URL"
+    echo "Please check SOLR_URL, SOLR_USER, and SOLR_PASSWD"
+    exit 1
+fi
+echo "SOLR connection OK!"
+echo ""
 
 if [ ! -f "$CSV_FILE" ]; then
-    echo "Error: File not found"
+    echo "ERROR: File not found: $CSV_FILE"
     exit 1
 fi
 
 TOTAL=$(tail -n +2 "$CSV_FILE" | wc -l)
-echo "Total companies: $TOTAL"
+echo "Total companies to upload: $TOTAL"
+echo ""
 
 count=0
 success=0
@@ -39,6 +54,8 @@ tail -n +2 "$CSV_FILE" | while IFS= read -r line; do
     ((count++))
 done > /tmp/batch.json
 
+echo "Building batches of $BATCH_SIZE..."
+
 # Split and send
 split -l $BATCH_SIZE /tmp/batch.json /tmp/solr_batch_
 
@@ -47,13 +64,29 @@ for file in /tmp/solr_batch_*; do
     paste -sd',' "$file" >> "$file.json"
     echo "]" >> "$file.json"
     
-    curl -s -X POST "$SOLR_URL/update?commit=true" \
+    RESULT=$(curl -s -w "%{http_code}" -X POST "$SOLR_URL/update?commit=true" \
         -u "$AUTH" \
         -H "Content-Type: application/json" \
-        -d @"$file.json" | grep -q '"status":0' && ((success+=BATCH_SIZE)) || ((errors+=BATCH_SIZE))
+        -d @"$file.json")
+    
+    if echo "$RESULT" | grep -q "200\|204"; then
+        ((success+=BATCH_SIZE))
+        echo -ne "\rProgress: $success / $count uploaded    "
+    else
+        ((errors+=BATCH_SIZE))
+        echo ""
+        echo "ERROR: Batch failed with code $RESULT"
+    fi
     
     rm "$file" "$file.json"
 done
 
-echo "Processed: $count | Success: $success | Errors: $errors"
+echo ""
+echo ""
+echo "=========================================="
+echo "DONE"
+echo "=========================================="
+echo "Total: $count | Success: $success | Errors: $errors"
+echo "=========================================="
+
 rm -f /tmp/batch.json /tmp/solr_batch_*
