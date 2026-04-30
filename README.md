@@ -114,3 +114,6 @@ The following components are considered **plugins** for the peviitor core projec
 - Scrapers — Automated data collectors that fetch and normalize job and company data.
 - Manual data validator — Tools or interfaces used by humans to validate and correct data.
 - Integrations — Connectors to external services (analytics, exporters, auth providers, etc.).
+
+#SOLR
+prod: https://solr.peviitor.ro
