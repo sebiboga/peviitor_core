@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 echo "=========================================="
-echo "Configurare Basic Auth in Solr 9.10 (Raspberry Pi + Docker)"
+echo "Configurare Basic Auth in Solr 10.x (Raspberry Pi + Docker)"
 echo "Container: peviitor-solr, bind: /home/sebi/peviitor/solr -> /var/solr"
 echo "=========================================="
 echo

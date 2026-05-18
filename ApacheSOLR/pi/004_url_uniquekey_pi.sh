@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
+CONTAINER="peviitor-solr"
 SOLR_URL="http://localhost:8983/solr"
 
 echo "=== Setting 'url' as uniqueKey for 'job' core ==="
@@ -36,22 +37,18 @@ curl -s -X POST "$SOLR_URL/job/schema" \
   }
 }' || true
 
-echo "=== Removing default 'id' field as uniqueKey ==="
-curl -s -X POST "$SOLR_URL/job/schema" \
-  -H "Content-Type: application/json" \
-  -d '{
-  "delete-field": {
-    "name": "id"
-  }
-}' || true
+echo "=== Changing uniqueKey from 'id' to 'url' in managed-schema.xml ==="
+docker exec "$CONTAINER" bash -c "
+  cp /var/solr/data/job/conf/managed-schema.xml /tmp/managed-schema.xml &&
+  sed -i 's|<uniqueKey>id</uniqueKey>|<uniqueKey>url</uniqueKey>|g' /tmp/managed-schema.xml &&
+  cp /tmp/managed-schema.xml /var/solr/data/job/conf/managed-schema.xml &&
+  rm /tmp/managed-schema.xml
+"
 
-echo "=== Setting 'url' as uniqueKey ==="
-curl -s -X POST "$SOLR_URL/job/schema/uniquekey" \
-  -H "Content-Type: application/json" \
-  -d '{
-  "uniqueKey": "url"
-}'
+echo "=== Reloading core ==="
+curl -s "$SOLR_URL/admin/cores?action=RELOAD&core=job"
 
+echo ""
 echo "=== Verifying uniqueKey ==="
 curl -s "$SOLR_URL/job/schema/uniquekey" | python3 -m json.tool || true
 
