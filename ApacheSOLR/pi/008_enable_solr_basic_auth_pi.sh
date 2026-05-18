@@ -38,8 +38,8 @@ cat > "$SECURITY_FILE_HOST" <<'EOF'
     },
     "permissions": [
       { "name": "security-edit", "role": "admin" },
-      { "name": "read", "role": "admin" },
-      { "name": "all", "role": "admin" }
+      { "name": "read", "role": ["admin", "job-reader"] },
+      { "name": "update", "role": "admin" }
     ]
   }
 }
@@ -85,3 +85,13 @@ echo
 echo "=========================================="
 echo "Gata: Basic Auth activata (solr / $SOLR_ADMIN_PASS)."
 echo "=========================================="
+echo
+
+echo "=== 7. Creare utilizator read-only optional ==="
+echo "Adauga utilizator 'reader' (parola: ReadOnly123) cu rol 'job-reader'."
+echo "Acest rol poate CITI orice core dar NU poate scrie."
+echo "Pentru a adauga, ruleaza manual dupa install.sh:"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authentication \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user\":{\"reader\":\"ReadOnly123\"}}'"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authorization \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user-role\":{\"reader\":[\"job-reader\"]}}'"

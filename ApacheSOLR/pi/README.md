@@ -92,10 +92,19 @@ newgrp docker   # or logout/login to activate docker group
 
 ### Authentication
 
-- **User**: `solr`
+- **Admin user**: `solr`
 - **Password**: `SolrRocks`
+- **Read-only user**: `reader` / `ReadOnly123` (optional, created after install)
 - **Mechanism**: Basic Auth via `security.json` (Solr `BasicAuthPlugin`)
-- All operations require the `admin` role
+
+### Authorization (Roles)
+
+| Role | Permissions |
+|------|-------------|
+| `admin` | Full access (read, update, security-edit) |
+| `job-reader` | Read-only access to all cores (CANNOT write) |
+
+**Note**: Solr's built-in `collection`-based permission restriction does not work in standalone (non-SolrCloud) mode. The `job-reader` role grants read access to all cores but cannot update/delete any data.
 
 ### Auto-Update (Cron)
 
