@@ -39,7 +39,7 @@ cat > "$SECURITY_FILE_HOST" <<'EOF'
     "permissions": [
       { "name": "security-edit", "role": "admin" },
       { "name": "read", "role": ["admin", "job-reader"] },
-      { "name": "update", "role": "admin" }
+      { "name": "update", "role": ["admin", "job-writer", "job-deleter"] }
     ]
   }
 }
@@ -87,11 +87,26 @@ echo "Gata: Basic Auth activata (solr / $SOLR_ADMIN_PASS)."
 echo "=========================================="
 echo
 
-echo "=== 7. Creare utilizator read-only optional ==="
-echo "Adauga utilizator 'reader' (parola: ReadOnly123) cu rol 'job-reader'."
-echo "Acest rol poate CITI orice core dar NU poate scrie."
-echo "Pentru a adauga, ruleaza manual dupa install.sh:"
+echo "=== 7. Creare utilizatori suplimentari (optional) ==="
+echo ""
+echo "Pentru a adauga utilizatori, ruleaza comenzile de mai jos DUPA install.sh"
+echo "(solr trebuie sa fie pornit si Basic Auth activat)."
+echo ""
+echo "--- Utilizator READER (doar citire) ---"
 echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authentication \\"
 echo "    -H 'Content-Type: application/json' -d '{\"set-user\":{\"reader\":\"ReadOnly123\"}}'"
 echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authorization \\"
 echo "    -H 'Content-Type: application/json' -d '{\"set-user-role\":{\"reader\":[\"job-reader\"]}}'"
+echo ""
+echo "--- Utilizator WRITER (adauga documente) ---"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authentication \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user\":{\"writer\":\"WriterPass\"}}'"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authorization \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user-role\":{\"writer\":[\"job-writer\"]}}'"
+echo ""
+echo "--- Utilizator DELETER (sterge documente) ---"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authentication \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user\":{\"deleter\":\"DeleterPass\"}}'"
+echo "  curl -u solr:SolrRocks -X POST http://localhost:8983/api/cluster/security/authorization \\"
+echo "    -H 'Content-Type: application/json' -d '{\"set-user-role\":{\"deleter\":[\"job-deleter\"]}}'"
+echo ""

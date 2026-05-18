@@ -92,19 +92,25 @@ newgrp docker   # or logout/login to activate docker group
 
 ### Authentication
 
-- **Admin user**: `solr`
-- **Password**: `SolrRocks`
-- **Read-only user**: `reader` / `ReadOnly123` (optional, created after install)
+| User | Password | Role |
+|------|----------|------|
+| `solr` | `SolrRocks` | `admin` |
+| `reader` | `ReadOnly123` | `job-reader` (optional, add after install) |
+| `writer` | `WriterPass` | `job-writer` (optional, add after install) |
+| `deleter` | `DeleterPass` | `job-deleter` (optional, add after install) |
+
 - **Mechanism**: Basic Auth via `security.json` (Solr `BasicAuthPlugin`)
 
 ### Authorization (Roles)
 
-| Role | Permissions |
-|------|-------------|
-| `admin` | Full access (read, update, security-edit) |
-| `job-reader` | Read-only access to all cores (CANNOT write) |
+| Role | Can Read | Can Update/Delete | Security |
+|------|----------|-------------------|----------|
+| `admin` | ✅ All cores | ✅ Full access | ✅ Full |
+| `job-reader` | ✅ All cores | ❌ Blocked (403) | ❌ |
+| `job-writer` | ❌ Blocked (403) | ✅ Both insert & delete | ❌ |
+| `job-deleter` | ❌ Blocked (403) | ✅ Both insert & delete | ❌ |
 
-**Note**: Solr's built-in `collection`-based permission restriction does not work in standalone (non-SolrCloud) mode. The `job-reader` role grants read access to all cores but cannot update/delete any data.
+**Note**: Solr uses a single `/update` handler for both indexing and deleting documents. The `update` permission covers both operations — insert and delete cannot be separated at the Solr auth level. The `job-writer` and `job-deleter` roles have identical `update` permissions but exist as separate named roles for accountability/audit tracking.
 
 ### Auto-Update (Cron)
 
